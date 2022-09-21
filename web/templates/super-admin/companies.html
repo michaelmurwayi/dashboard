@@ -202,13 +202,42 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="overview-wrap">
-                                    <h2 class="title-1">Company</h2>
                                     <button class="au-btn au-btn-icon au-btn--blue">
                                         <i class="zmdi zmdi-plus"></i>Add Company</button>
                                 </div>
                             </div>
                         </div>
                         
+            </div>
+            <div class="content-table">
+                <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="my-5 p-2">
+                          <h1 class="display-4 text-center"> Company <span class="text-danger border px-2 bg-dark text-light my-2">Records</span></h1>
+                          <input type="text" id="searchItems" placeholder="Search Company Name" class="form-control float-left col-md-4 mt-3" style="border-radius: 25px;"  onkeyup="filterTable()">
+                        </div>
+                        <table class="table table-hover" id="tables">
+                          <thead class="thead-dark">
+                            <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">First</th>
+                              <th scope="col">Last</th>
+                              <th scope="col">Handle</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <th scope="row">1</th>
+                              <td>Mark</td>
+                              <td>Otto</td>
+                              <td>@mdo</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
             </div>
             <!-- END MAIN CONTENT-->
             <!-- END PAGE CONTAINER-->
@@ -236,7 +265,28 @@
     <script src="{% static 'vendor/chartjs/Chart.bundle.min.js' %}"></script>
     <script src="{% static 'vendor/select2/select2.min.js' %}">
     </script>
+    <script>
+        filterTable = () => {
+            let filter = document.getElementById("searchItems").value.toUpperCase();
+            let table = document.getElementById("tables");
+            let tr = table.getElementsByTagName("tr");
+            let p = document.getElementById("founder");
+            for (var i = 0; i < tr.length; i++) {
+                var td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                var text = td.innerText || td.textContent;
+                if (text.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                    p.style.display = "none";
+                } else {
+                    tr[i].style.display = "none";
+                    p.style.display = "block";
+                }
+                }
+            }
+            };
 
+    </script>
 
 </body>
 
