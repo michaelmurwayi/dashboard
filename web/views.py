@@ -13,16 +13,16 @@ class SuperAdminCompanyView(TemplateView):
     template_name = "super-admin/companies.html"
 
 class SuperAdminSaccoView(TemplateView):
-    pass
+    template_name = "super-admin/saccos.html"
 
 class SuperAdminUsersView(TemplateView):
-    pass
+    template_name = "super-admin/users.html"
 
 class SuperAdminChartsView(TemplateView):
-    pass
+    template_name = "super-admin/charts.html"
 
 class SuperAdminEventsView(TemplateView):
-    pass
+    template_name = "super-admin/events.html"
 
 class SuperAdminMapsView(TemplateView):
-    pass
+    template_name = "super-admin/maps.html"
