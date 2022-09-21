@@ -63,8 +63,14 @@
                                 <i class="fas fa-tachometer-alt"></i>Dashboard</a>
                         </li>
                         <li>
-                            <a href="{% url 'super-admin-company' %}">
-                                <i class="fas fa-building"></i>Company</a>
+                            <span class="icon-inline">
+                                <span class="icon-styled color-main fs-14">
+                                    <i class="fa fa-pencil"></i>
+                                </span>
+                                <span class="small-text">
+                                    <a id="loginUrlToggle" href="{% url 'super-admin-company' %}"><b>Company</b></a>
+                                </span>
+                            </span>
                         </li>
                         <li>
                             <a href="{% url 'super-admin-sacco' %}">
@@ -102,17 +108,17 @@
             <div class="menu-sidebar__content js-scrollbar1">
                 <nav class="navbar-sidebar">
                     <ul class="list-unstyled navbar__list">
-                        <li class="active has-sub">
-                            <a class="js-arrow" href="#">
+                        <li class="active">
+                            <a href="{% url 'super-admin' %}">
                                 <i class="fas fa-tachometer-alt"></i>Dashboard</a>
                         </li>
                         <li>
                             <a href="{% url 'super-admin-company' %}">
-                                Company</a>
+                                <i class="fas fa-building"></i>Company</a>
                         </li>
                         <li>
-                            <a href="{% url 'super-admin-sacco' %}">
-                                <i class="fas fa-tle"></i>Sacco</a>
+                            <a href="/super-admin/Company">
+                                <i class="fas fa-table"></i>Sacco</a>
                         </li>
                         <li>
                             <a href="{% url 'super-admin-users' %}">
@@ -881,7 +887,7 @@
     </script>
 
     <!-- Main JS-->
-    <script src="{% static 'js/main.js' %}"></script>
+    <!-- <script src="{% static 'js/main.js' %}"></script> -->
 
 </body>
 

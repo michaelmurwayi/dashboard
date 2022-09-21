@@ -7,10 +7,10 @@ from django.views.generic import TemplateView
 # This views are restricted only to Super admin role users
 
 class DashboardView(TemplateView):
-    template_name = "dashboard.html"
+    template_name = "super-admin/dashboard.html"
 
 class SuperAdminCompanyView(TemplateView):
-    pass
+    template_name = "super-admin/companies.html"
 
 class SuperAdminSaccoView(TemplateView):
     pass
