@@ -34,6 +34,25 @@ class SuperAdminCompanyView(TemplateView):
 class SuperAdminSaccoView(TemplateView):
     template_name = "super-admin/saccos.html"
 
+    def get(self, request):
+        saccos = [
+            {
+                "id":"1",
+                "name":"Tropical",
+                "email":"tropical@gmail.com",
+                "location":"Thika Road, Eastern Bypass",
+                "phonenumber":"+2547455445"
+            },
+            {
+                "id":"2",
+                "name":"Kahawa Bora",
+                "email":"bora@gmail.com",
+                "location":"Thika, Garrisa Highway",
+                "phonenumber":"+254756655665"
+            }
+        ]
+        return render(request, self.template_name, {"saccos":saccos})
+
 class SuperAdminUsersView(TemplateView):
     template_name = "super-admin/users.html"
 
