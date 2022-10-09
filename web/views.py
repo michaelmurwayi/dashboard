@@ -55,7 +55,25 @@ class SuperAdminSaccoView(TemplateView):
 
 class SuperAdminUsersView(TemplateView):
     template_name = "super-admin/users.html"
-
+    
+    def get(self, request):
+        users = [
+            {
+                "id":"1",
+                "firstname":"Rick",
+                "lastname":"Sanchez",
+                "email":"tropical@gmail.com",
+                "phonenumber":"+2547455445"
+            },
+            {
+                "id":"2",
+                "firstname":"Morty",
+                "lastname":"Sanchez",
+                "email":"bora@gmail.com",
+                "phonenumber":"+254756655665"
+            }
+        ]
+        return render(request, self.template_name, {"users":users})
 class SuperAdminChartsView(TemplateView):
     template_name = "super-admin/charts.html"
 
