@@ -1,4 +1,5 @@
 {% load static %}
+{% csrf_token %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -310,13 +311,14 @@
                                     <div class="modal-content">
                                         <button class="btn btn-outline-danger col-md-1" style="border: none;" onclick="close1()">&times;</button>
                                     <div class="container__form container--signup">
-                                        <form action="#" class="form" id="form1">
+                                        <form action="{% url 'super-admin-company' %}" method="POST" class="form" id="form1">
+                                            {% csrf_token %}
                                             <h2 class="form__title">Add Company</h2>
                                             <hr style="border: 2px solid black; width: 50%;">
-                                            <input type="text" placeholder="Company Name" class="input" />
-                                            <input type="text" placeholder="Company Email" class="input" />
-                                            <input type="text" placeholder="Location" class="input" />
-                                            <input type="text" placeholder="Number" class="input" />
+                                            <input type="text" placeholder="Company Name"  name="name"  class="input" />
+                                            <input type="text" placeholder="Company Email" name="email" class="input" />
+                                            <input type="text" placeholder="Location" name="location" class="input" />
+                                            <input type="text" placeholder="Number" name="number" class="input" />
                                             <button class="btn btn-primary">Add Company</button>
                                         </form>
                                     </div>
@@ -358,7 +360,7 @@
                               <td>{{ company.phonenumber }}</td>
                               <td>
                                 <div class="row">
-                                    <button class="btn btn-warning" id="update"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                    <button class="btn btn-warning" id="update" onclick="open_update_form( {{ company }} )"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                     <!-- The Modal -->
                                     <div id="updateModal" class="modal">
 
@@ -366,14 +368,17 @@
                                         <div class="modal-content">
                                         <button class="btn btn-outline-danger col-md-1" style="border: none;" onclick="close2()">&times;</button>
                                         <div class="container__form container--signup">
-                                            <form action="#" class="form" id="form1">
+                                            <form action="{% url 'super-admin-company' %}" method="POST" class="form" id="form1">
+                                                {% csrf_token %}
                                                 <h2 class="form__title">Update Company</h2>
                                                 <hr style="border: 2px solid black; width: 50%;">
-                                                <input type="text" placeholder="Company Name" class="input" />
-                                                <input type="text" placeholder="Company Email" class="input" />
-                                                <input type="text" placeholder="Location" class="input" />
-                                                <input type="text" placeholder="Number" class="input" />
-                                                <button class="btn btn-primary">Add Company</button>
+                                                <input type="text" value="PUT" name="_method" id="method" class="input" />
+                                                <input type="text"  name="company_id" id="company_id" class="input" />
+                                                <input type="text" placeholder="Company Name"  name="name" id="company_name" class="input" />
+                                                <input type="text" placeholder="Company Email"  name="email" id="company_email" class="input" />
+                                                <input type="text" placeholder="Location"  name="location" id="company_location" class="input" />
+                                                <input type="text" placeholder="Number"  name="number" id="company_number" class="input" />
+                                                <button class="btn btn-primary">Update Company</button>
                                             </form>
                                         </div>
                                         </div>
@@ -436,7 +441,7 @@
                 }
             }
             };
-        
+            
             // Get the modal
             var modal1 = document.getElementById("addCompanyModal");
 
@@ -460,9 +465,25 @@
             // Get the <span> element that closes the modal
             var span = document.getElementsByClassName("close")[0];
 
-            // When the user clicks on the button, open the modal
-            btn.onclick = function() {
+            // When the user clicks on the update button, open the update modal form
+            function open_update_form(company) {
             modal2.style.display = "block";
+            console.log(company);
+            $('#id').attr('type','hidden');
+            $('#method').attr('type','hidden');
+            $('#company_id').attr('placeholder',company["id"]);
+            $('#company_name').attr('placeholder',company["name"]);
+            $('#company_email').attr('placeholder',company["email"]);
+            $('#company_location').attr('placeholder',company["location"]);
+            $('#company_number').attr('placeholder',company["number"]);
+            
+            $('#company_id').attr('value',company["id"]);
+            $('#company_name').attr('value',company["name"]);
+            $('#company_email').attr('value',company["email"]);
+            $('#company_location').attr('value',company["location"]);
+            $('#company_number').attr('value',company["number"]);
+            
+
             }
             function close2(){
                 modal2.style.display = "none";
