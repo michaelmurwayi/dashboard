@@ -127,13 +127,7 @@ def api_get_request(request, url):
                 }
         response = requests.get(url, headers=headers)   
         if response.status_code == 401:
-            email = "mike1@gmail.com"
-            password = "C11h28no3"
-            request.session["token"] = get_access_token(email, password)
-            headers = {
-                'content-type': "application/json",
-                'Authorization': f'Bearer {request.session["token"]}'
-                }
+            headers = add_auth_token(request)
             response = requests.get(url, headers=headers)
 
             return response.json()
