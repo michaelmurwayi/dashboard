@@ -30,7 +30,8 @@ class SuperAdminCompanyView(TemplateView):
             "location": request.POST.get("location"),
         }
         if request.POST.get("_method") == "PUT":
-            api_put_request(request, self.url, data)
+            id = request.POST.get('company_id')
+            api_put_request(request, id, self.url, data)
         else:
             api_post_request(request,self.url, data)
 
@@ -40,45 +41,42 @@ class SuperAdminCompanyView(TemplateView):
 
 class SuperAdminSaccoView(TemplateView):
     template_name = "super-admin/saccos.html"
-
+    url = "http://127.0.0.1:8080/saccos/"
+    
     def get(self, request):
-        saccos = [
-            {
-                "id":"1",
-                "name":"Tropical",
-                "email":"tropical@gmail.com",
-                "location":"Thika Road, Eastern Bypass",
-                "phonenumber":"+2547455445"
-            },
-            {
-                "id":"2",
-                "name":"Kahawa Bora",
-                "email":"bora@gmail.com",
-                "location":"Thika, Garrisa Highway",
-                "phonenumber":"+254756655665"
-            }
-        ]
-        return render(request, self.template_name, {"saccos":saccos})
+        email = "mike1@gmail.com"
+        password = "C11h28no3"
+        if check_token(request) == 404:
+            request.session["token"] = get_access_token(email, password)
+        
+        saccos = api_get_request(request, self.url)
+        company_url = "http://127.0.0.1:8080/companies/"
+        companies = api_get_request(request, company_url)
+        
+        
+        return render(request, self.template_name, {"saccos":saccos, "companies":companies})
+    
+    def post(self,request):
 
-    def get(self, request):
-        saccos = [
-            {
-                "id":"1",
-                "name":"Tropical",
-                "email":"tropical@gmail.com",
-                "location":"Thika Road, Eastern Bypass",
-                "phonenumber":"+2547455445"
-            },
-            {
-                "id":"2",
-                "name":"Kahawa Bora",
-                "email":"bora@gmail.com",
-                "location":"Thika, Garrisa Highway",
-                "phonenumber":"+254756655665"
-            }
-        ]
-        return render(request, self.template_name, {"saccos":saccos})
+        data = {
+            "name": request.POST.get("name"),
+            "email": request.POST.get("email"),
+            "location": request.POST.get("location"),
+            "company": request.POST.get("company"),
+        }
+        if request.POST.get("_method") == "PUT":
+            id = request.POST.get('sacco_id')
+            api_put_request(request, id, self.url, data)
+        else:
+            api_post_request(request,self.url, data)
 
+        
+        saccos = api_get_request(request, self.url)
+        
+        
+        return render(request, self.template_name, {"saccos":saccos})
+    
+    
 class SuperAdminUsersView(TemplateView):
     template_name = "super-admin/users.html"
     
@@ -127,15 +125,6 @@ def get_access_token(email, password):
 
     return token
 
-def get_access_token(email, password):
-    # get authentication token from api and save to session
-    
-    url = 'http://127.0.0.1:8080/login/'
-    data = {'email': email, "password":password}
-    response = requests.post(url, data=data)
-    token = response.json()["access"]
-    
-    return token
 
 
 def api_get_request(request, url):
@@ -157,9 +146,9 @@ def api_get_request(request, url):
 
         return "Error occured Making request"
 
-def api_put_request(request, url, data):
+def api_put_request(request, id, url, data):
     # making put request to the data api
-    put_url = f"{url}{request.POST.get('company_id')}/"   
+    put_url = f"{url}{id}/"   
     try:
         headers = {
                 'content-type': "application/json",
