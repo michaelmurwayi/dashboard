@@ -310,14 +310,17 @@
                                     <div class="modal-content">
                                         <button class="btn btn-outline-danger col-md-1" style="border: none;" onclick="close1()">&times;</button>
                                     <div class="container__form container--signup">
-                                        <form action="#" class="form" id="form1">
+                                        <form action="{% url 'super-admin-users' %}" method="POST" class="form" id="form">
+                                            {% csrf_token %}
                                             <h2 class="form__title">Add User</h2>
                                             <hr style="border: 2px solid black; width: 50%;">
-                                            <input type="text" placeholder="FirstName" class="input" />
-                                            <input type="text" placeholder="LastName" class="input" />
-                                            <input type="text" placeholder="Email" class="input" />
-                                            <input type="text" placeholder="Location" class="input" />
-                                            <input type="text" placeholder="Number" class="input" />
+                                            <input type="text" placeholder="FirstName" name="first_name"  class="input" />
+                                            <input type="text" placeholder="LastName" name="last_name"  class="input" />
+                                            <input type="text" placeholder="Email" name="email"  class="input" />
+                                            <input type="text" placeholder="Location" name="location"  class="input" />
+                                            <input type="text" placeholder="Phonenumber" name="phonenumber"  class="input" />
+                                            <input type="password" placeholder="password" name="password"  class="input" />
+                                            <input type="password" placeholder="password" name="password2"  class="input" />
                                             <button class="btn btn-primary">Add User</button>
                                         </form>
                                     </div>
@@ -350,16 +353,16 @@
                             </tr>
                           </thead>
                           <tbody>
-                            {% for  User in users%}
+                            {% for  user in users%}
                             <tr>
-                              <th scope="row">{{ User.id }}</th>
-                              <td>{{ User.firstname }}</td>
-                              <td>{{ User.lastname }}</td>
-                              <td>{{ User.email }}</td>
-                              <td>{{ User.phonenumber }}</td>
+                              <th scope="row">{{ user.id }}</th>
+                              <td>{{ user.first_name }}</td>
+                              <td>{{ user.last_name }}</td>
+                              <td>{{ user.email }}</td>
+                              <td>{{ user.phonenumber }}</td>
                               <td>
                                 <div class="row">
-                                    <button class="btn btn-warning" id="update"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                    <button class="btn btn-warning"  onclick="open_update_form( {{ user }} )" id="update"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                     <!-- The Modal -->
                                     <div id="updateModal" class="modal">
 
@@ -367,15 +370,20 @@
                                         <div class="modal-content">
                                         <button class="btn btn-outline-danger col-md-1" style="border: none;" onclick="close2()">&times;</button>
                                         <div class="container__form container--signup">
-                                            <form action="#" class="form" id="form1">
+                                            <form action="{% url 'super-admin-users' %}" method="POST" class="form" id="form1">
+                                                {% csrf_token %}
                                                 <h2 class="form__title">Update User</h2>
                                                 <hr style="border: 2px solid black; width: 50%;">
-                                                <input type="text" placeholder="FirstName" class="input" />
-                                                <input type="text" placeholder="LastName" class="input" />
-                                                <input type="text" placeholder="Email" class="input" />
-                                                <input type="text" placeholder="Location" class="input" />
-                                                <input type="text" placeholder="Number" class="input" />
-                                                <button class="btn btn-primary">Add User</button>
+                                                <input type="text" value="PUT" name="_method" id="method" class="input" />
+                                                <input type="text"  name="id" id="user_id" class="input" />
+                                                <input type="text" placeholder="FirstName" name="first_name" id="user_first_name" class="input" />
+                                                <input type="text" placeholder="LastName" name="last_name" id="user_last_name" class="input" />
+                                                <input type="text" placeholder="Email" name="email" id="user_email" class="input" />
+                                                <input type="text" placeholder="Location" name="location" id="user_location" class="input" />
+                                                <input type="text" placeholder="Phonenumber" name="phonenumber" id="user_phonenumber" class="input" />
+                                                <input type="password" placeholder="password" name="password" id="user_password" class="input" />
+                                                <input type="password" placeholder="Confirm password" name="password2" id="user_password2" class="input" />
+                                                <button class="btn btn-primary">Update User</button>
                                             </form>
                                         </div>
                                         </div>
@@ -462,9 +470,27 @@
             // Get the <span> element that closes the modal
             var span = document.getElementsByClassName("close")[0];
 
-            // When the user clicks on the button, open the modal
-            btn.onclick = function() {
+            // When the user clicks on the update button, open the update modal form
+            function open_update_form(user) {
             modal2.style.display = "block";
+            console.log(user);
+            $('#user_id').attr('type','hidden');
+            $('#method').attr('type','hidden');
+            $('#user_id').attr('placeholder',user["id"]);
+            $('#user_first_name').attr('placeholder',user["first_name"]);
+            $('#user_last_name').attr('placeholder',user["last_name"]);
+            $('#user_email').attr('placeholder',user["email"]);
+            $('#user_location').attr('placeholder',user["location"]);
+            $('#user_number').attr('placeholder',user["phonenumber"]);
+            
+            $('#user_id').attr('value',user["id"]);
+            $('#user_first_name').attr('value',user["first_name"]);
+            $('#user_last_name').attr('value',user["last_name"]);
+            $('#user_email').attr('value',user["email"]);
+            $('#user_location').attr('value',user["location"]);
+            $('#user_phonenumber').attr('value',user["phonenumber"]);
+            
+
             }
             function close2(){
                 modal2.style.display = "none";
