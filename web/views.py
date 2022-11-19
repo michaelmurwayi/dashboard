@@ -86,25 +86,46 @@ class SuperAdminSaccoView(TemplateView):
 
 class SuperAdminUsersView(TemplateView):
     template_name = "super-admin/users.html"
-    
+    url = "http://127.0.0.1:8080/users/"
+    register_url = "http://127.0.0.1:8080/api/register/"
+
     def get(self, request):
-        users = [
-            {
-                "id":"1",
-                "firstname":"Rick",
-                "lastname":"Sanchez",
-                "email":"tropical@gmail.com",
-                "phonenumber":"+2547455445"
-            },
-            {
-                "id":"2",
-                "firstname":"Morty",
-                "lastname":"Sanchez",
-                "email":"bora@gmail.com",
-                "phonenumber":"+254756655665"
-            }
-        ]
+        email = "mike1@gmail.com"
+        password = "C11h28no3"
+        if check_token(request) == 404:
+            request.session["token"] = get_access_token(email, password)
+        
+        users = api_get_request(request, self.url)
+        
         return render(request, self.template_name, {"users":users})
+
+    def post(self,request):
+
+        data = {
+            "first_name": request.POST.get("first_name"),
+            "last_name": request.POST.get("last_name"),
+            "email": request.POST.get("email"),
+            "location": request.POST.get("location"),
+            "phonenumber": request.POST.get("phonenumber"),
+            "password": request.POST.get("password"),
+            "password2": request.POST.get("password"),
+
+        }
+        print(data)
+        if request.POST.get("_method") == "PUT":
+            id = request.POST.get('id')
+            api_put_request(request, id, self.url, data)
+        else:
+            api_post_request(request,self.register_url, data)
+
+        
+        saccos = api_get_request(request, self.url)
+        
+        users = api_get_request(request, self.url)
+        
+        return render(request, self.template_name, {"users":users, "saccos":saccos})
+    
+
 class SuperAdminChartsView(TemplateView):
     template_name = "super-admin/charts.html"
 
