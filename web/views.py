@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 import requests
+import json
 
 # Create your views here.
 
@@ -13,6 +14,7 @@ class DashboardView(TemplateView):
 class SuperAdminCompanyView(TemplateView):
     template_name = "super-admin/companies.html"
     url = "http://127.0.0.1:8080/companies/"
+    users_url = "http://127.0.0.1:8080/users/"
 
     def get(self, request):
         email = "mike1@gmail.com"
@@ -20,8 +22,9 @@ class SuperAdminCompanyView(TemplateView):
         if check_token(request) == 404:
             request.session["token"] = get_access_token(email, password)
         
+        users = api_get_request(request, self.users_url)
         companies = api_get_request(request, self.url)
-        return render(request, self.template_name, {"companies":companies})
+        return render(request, self.template_name, {"companies":companies, "users":users})
     
     def post(self,request):
         data = {
@@ -30,10 +33,12 @@ class SuperAdminCompanyView(TemplateView):
             "location": request.POST.get("location"),
         }
         if request.POST.get("_method") == "PUT":
-            api_put_request(request, self.url, data)
+            put_url = f"{self.url}{request.POST.get('company_id')}/"
+            api_put_request(request, put_url, data)
         else:
             api_post_request(request,self.url, data)
 
+    
         companies = api_get_request(request, self.url)
         return render(request, self.template_name, {"companies":companies})
 
@@ -41,6 +46,7 @@ class SuperAdminCompanyView(TemplateView):
 class SuperAdminCompanyAdminView(TemplateView):
     template_name = "super-admin/companies.html"   
     url = "http://127.0.0.1:8080/companies/"
+    users_url = "http://127.0.0.1:8080/users/"
 
     def get(self, request):
         email = "mike1@gmail.com"
@@ -48,8 +54,10 @@ class SuperAdminCompanyAdminView(TemplateView):
         if check_token(request) == 404:
             request.session["token"] = get_access_token(email, password)
         
+        users = api_get_request(request, self.users_url)
         companies = api_get_request(request, self.url)
-        return render(request, self.template_name, {"companies":companies})
+        print(users)
+        return render(request, self.template_name, {"companies":companies, "users": users})
     
     def post(self, request):
         email = "mike1@gmail.com"
@@ -57,10 +65,19 @@ class SuperAdminCompanyAdminView(TemplateView):
         if check_token(request) == 404:
             request.session["token"] = get_access_token(email, password)
 
-        print(request)
+        data = {
+            "company": request.POST.get("company_id"),
+            "is_company_admin": True  
+        }
+    
+        put_url = f"{self.users_url}{request.POST.get('user')}/"
         
+        response = api_patch_request(request, put_url, data)
+
+        users = json.dump(api_get_request(request, self.users_url))
         companies = api_get_request(request, self.url)
-        return render(request, self.template_name, {"companies":companies})
+        
+        return render(request, self.template_name, {"companies":companies, "users": users})
 
 class SuperAdminSaccoView(TemplateView):
     template_name = "super-admin/saccos.html"
@@ -183,15 +200,37 @@ def api_get_request(request, url):
 
         return "Error occured Making request"
 
-def api_put_request(request, url, data):
+def api_patch_request(request, url, data):
     # making put request to the data api
-    put_url = f"{url}{request.POST.get('company_id')}/"   
+       
     try:
         headers = {
                 'content-type': "application/json",
                 'Authorization': f'Bearer {request.session["token"]}'
                 }
-        response = requests.put(put_url, headers=headers, json=data)   
+        response = requests.patch(url, headers=headers, json=data) 
+          
+        if response.status_code == 401:
+            headers = add_auth_token(request)
+            response = requests.patch(url, headers=headers, json=data)
+            return response.json()
+        else:
+            print(response.text)
+            return response.json()
+    except Exception:
+        raise Exception
+        return "Error occured Making request"
+
+def api_put_request(request, url, data):
+    # making put request to the data api
+       
+    try:
+        headers = {
+                'content-type': "application/json",
+                'Authorization': f'Bearer {request.session["token"]}'
+                }
+        response = requests.put(url, headers=headers, json=data) 
+          
         if response.status_code == 401:
             headers = add_auth_token(request)
             response = requests.put(url, headers=headers, json=data)

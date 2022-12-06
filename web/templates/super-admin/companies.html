@@ -329,10 +329,6 @@
                     </div>
                 </div>
             </div>
-            <div class="box">
-                <a class="button au-btn au-btn-icon au-btn text-dark mt-3" id="companyAdministrator" href=""><i class="fa fa-plus text-info" aria-hidden="true"></i>
-                <b>Company Administrator </b></a>
-            </div>
             </div>
             <div class="content-table">
                 <div class="container-fluid">
@@ -343,17 +339,18 @@
                           <input type="text" id="searchItems" placeholder="Search Company Name" class="form-control float-left col-md-4 mt-3" style="border-radius: 25px;"  onkeyup="filterTable()">
                         </div>
                         <table class="table table-hover" id="tables">
-                          <thead class="thead-dark">
+                          <thead class="thead-dark" style="text-align: center;">
                             <tr>
                               <th scope="col">Id</th>
                               <th scope="col">Name</th>
                               <th scope="col">Email</th>
                               <th scope="col">Location</th>
                               <th scope="col">Number</th>
+                              <th scope="col">Company Administrator</th>
                               <th scope="col">Actions</th>
                             </tr>
                           </thead>
-                          <tbody>
+                          <tbody style="text-align: center;" >
                             {% for  company in companies%}
                             <tr>
                               <th scope="row">{{ company.id }}</th>
@@ -361,6 +358,69 @@
                               <td>{{ company.email }}</td>
                               <td>{{ company.location }}</td>
                               <td>{{ company.phonenumber }}</td>
+                              <td>
+                                <div class="row">
+                                    <div class="col-md-6 ml-5">
+                                    <!-- Form to add company admin from user list  -->
+                                    <form class="col-md-10 ml-5 mt-1" action="{% url 'super-admin-company-admin' %}" method="POST">
+                                        
+                                        {% csrf_token %}
+                                        <input value="{{ company.id }}" name="company_id" id="company_id" type="hidden">
+                                        <select name="user" class="input" style="background-color: rgba(255,255,255, .0); border: none; outline: none; border-radius: 0px; position: relative; margin-top: 0px; height: 25px; font-size: 15px; padding: 0px;">
+                                            <option disabled selected >Administrator</option>
+                                            {% for user in users %}
+                                            <option value="{{ user.id }}" name="user" > {{ user.first_name }} {{ user.last_name }} </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="bg-dark">
+
+                                        <button class="button au-btn au-btn-icon au-btn text-dark"  type="submit"><i class="fa fa-plus text-info" aria-hidden="true"></i></button>
+                                    </div>
+                                </form>
+                                <div class="bg-dark">
+                                    <button class="button au-btn au-btn-icon au-btn text-dark" onclick="show_company_admins({{ company.id}} )" ><i class="fa fa-file-text text-white" aria-hidden="true"></i></button>
+                                </div>
+                                    <div id="adminModal" class="modal">
+
+                                        <!-- Modal content -->
+                                        <div class="modal-content">
+                                        <button class="btn btn-outline-danger col-md-1" style="border: none;" onclick="close2()">&times;</button>
+                                        <div class="container__form container--signup">
+                                            <h3>{{ company.name }} </h3>
+                                            <h4 class="text-warning">Administrators</h4>
+                                            <hr>
+                                        {% for user in users %}
+                                            {% if user.company == company.id %}
+                                            <div class="row mt-3" style="line-height:40px;">
+                                            <div class="lables col-md-3" style="text-align: right; font-weight: bold;">
+                                                <p>FirstName</p>
+                                                <p>LastName</p>
+                                                <p>Email</p>
+                                                <p>Phonenumber</p>
+                                            </div>
+                                            <div class="col-md-5" style="text-align: left;">
+                                                <p> {{ user.first_name }} </p>
+                                                <p> {{ user.last_name }} </p>
+                                                <p> {{ user.email }} </p>
+                                                <p> {{ user.phonenumber }} </p>
+                                                
+                                            </div>
+                                            <div class="col-md-3">
+                                                <img src="https://cdn.dribbble.com/users/304574/screenshots/6222816/male-user-placeholder.png" class="img-fluid rounded-circle hover-shadow" alt="Los Angeles Skyscrapers"/>
+                                                <button class=" mt-3 btn  btn-sm btn-danger">Remove Administrator</button>
+                                            </div>
+                                            <hr>
+                                        </div>
+                                        <hr style="border: 1px solid;">
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    </div>
+                                    
+                                </div>
+                            </td>
                               <td>
                                 <div class="row">
                                     <button class="btn btn-warning" id="update" onclick="open_update_form( {{ company }} )"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
@@ -462,11 +522,6 @@
             // Get the modal for company update
             var modal2 = document.getElementById("updateModal");
 
-            // Get the button that opens the modal
-            var btn = document.getElementById("update");
-
-            // Get the <span> element that closes the modal
-            var span = document.getElementsByClassName("close")[0];
 
             // When the user clicks on the update button, open the update modal form
             function open_update_form(company) {
@@ -498,7 +553,17 @@
                 modal1.style.display = "none";
             }
             }
+            // Get modal for admins
+            var modal3 = document.getElementById("adminModal");
 
+            function show_company_admins(company_id){
+                modal3.style.display = "block";
+                console.log(company_id)
+                var users = "{{ users }}";
+                console.log(users)
+
+            }
+           
     </script>
 
 </body>

@@ -1,0 +1,43 @@
+<!-- MENU SIDEBAR-->
+<aside class="menu-sidebar d-none d-lg-block">
+    <div class="logo">
+        <a href="#">
+            <img src=" {% static 'images/icon/logo.png' %} " alt="Cool Admin" />
+        </a>
+    </div>
+    <div class="menu-sidebar__content js-scrollbar1">
+        <nav class="navbar-sidebar">
+            <ul class="list-unstyled navbar__list">
+                <li>
+                    <a href="{% url 'super-admin' %}">
+                        <i class="fas fa-tachometer-alt"></i>Dashboard</a>
+                </li>
+                <li class="active">
+                    <a href="{% url 'super-admin-company' %}">
+                        <i class="fas fa-building"></i>Company</a>
+                </li>
+                <li>
+                    <a href="{% url 'super-admin-sacco' %}">
+                        <i class="fas fa-table"></i>Sacco</a>
+                </li>
+                <li>
+                    <a href="{% url 'super-admin-users' %}">
+                        <i class="fas fa-users"></i>Users</a>
+                </li>
+                <li>
+                    <a href="{% url 'super-admin-charts' %}">
+                        <i class="fas fa-chart-bar"></i>Charts</a>
+                </li>
+                <li>
+                    <a href="{% url 'super-admin-events' %}">
+                        <i class="fas fa-calendar-alt"></i>Events</a>
+                </li>
+                <li class="has-sub">
+                    <a class="js-arrow" href="{% url 'super-admin-maps' %}">
+                        <i class="fas fa-map-marker-alt"></i>Maps</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</aside>
+<!-- END MENU SIDEBAR-->
