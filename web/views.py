@@ -3,6 +3,7 @@ from django.views.generic import TemplateView
 import requests
 import json
 
+
 # Create your views here.
 
 # Super admin views
@@ -60,21 +61,35 @@ class SuperAdminCompanyAdminView(TemplateView):
         return render(request, self.template_name, {"companies":companies, "users": users})
     
     def post(self, request):
+        # post method will be used for adding new company admins
+        # patch method will be used will deleting company admins
+
         email = "mike1@gmail.com"
         password = "C11h28no3"
+        
         if check_token(request) == 404:
             request.session["token"] = get_access_token(email, password)
 
-        data = {
-            "company": request.POST.get("company_id"),
-            "is_company_admin": True  
-        }
-    
-        put_url = f"{self.users_url}{request.POST.get('user')}/"
-        
-        response = api_patch_request(request, put_url, data)
+        if request.POST.get("form_name") == "add":
 
-        users = json.dump(api_get_request(request, self.users_url))
+            data = {
+                "company": request.POST.get("company_id"),
+                "is_company_admin": True  
+            }
+        else:
+            data = {
+                "company": "",
+                "is_company_admin": False
+            }
+
+        patch_url = f"{self.users_url}{request.POST.get('user_id')}/"
+        
+        print(patch_url)
+
+        response = api_patch_request(request, patch_url, data)
+
+        users = api_get_request(request, self.users_url)
+
         companies = api_get_request(request, self.url)
         
         return render(request, self.template_name, {"companies":companies, "users": users})
