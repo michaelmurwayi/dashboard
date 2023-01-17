@@ -45,7 +45,7 @@ class SuperAdminCompanyView(TemplateView):
 
 
 class SuperAdminCompanyAdminView(TemplateView):
-    template_name = "super-admin/companies.html"   
+    template_name = "super-admin/company_admin.html"   
     url = "http://127.0.0.1:8080/companies/"
     users_url = "http://127.0.0.1:8080/users/"
 
@@ -57,7 +57,8 @@ class SuperAdminCompanyAdminView(TemplateView):
         
         users = api_get_request(request, self.users_url)
         companies = api_get_request(request, self.url)
-        print(users)
+        
+
         return render(request, self.template_name, {"companies":companies, "users": users})
     
     def post(self, request):
@@ -82,13 +83,12 @@ class SuperAdminCompanyAdminView(TemplateView):
                 "is_company_admin": False
             }
 
+
         patch_url = f"{self.users_url}{request.POST.get('user_id')}/"
         
-        print(patch_url)
-
         response = api_patch_request(request, patch_url, data)
 
-        users = api_get_request(request, self.users_url)
+        users =  json.dumps( api_get_request(request, self.users_url))
 
         companies = api_get_request(request, self.url)
         
