@@ -60,41 +60,21 @@
 
         /* The Modal (background) */
         .modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        z-index: 1; /* Sit on top */
+        position: absolute; /* Stay in place */
         left: 0;
         top: 0;
         width: 100%; /* Full width */
         height: 100%; /* Full height */
         overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        
         }
 
         /* Modal Content/Box */
         .modal-content {
         background-color: #fefefe;
-        margin: 10% auto; /* 15% from the top and centered */
-        margin-left: 35%;
+        margin: 0% auto; /* 15% from the top and centered */ 
         padding: 20px;
-        border: 1px solid #888;
-        width: 40%; /* Could be more or less, depending on screen size */
-        }
-
-        /* The Close Button */
-        .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
+        width: 100%; /* Could be more or less, depending on screen size */
         }
 
         .form {
@@ -292,53 +272,51 @@
             </header>
             <!-- HEADER DESKTOP-->
 
-            <!-- MAIN CONTENT-->
-            <div class="main-content">
-            <div class="section__content section__content--p30">
-                <div class="container-fluid">
-                    <div class="row">
-                    <div class="col-md-12">
-                        <div class="overview-wrap">
-                                <div class="box">
-                                    <a class="button au-btn au-btn-icon au-btn text-dark" id="addCompany" href="#popup1"><i class="fa fa-plus text-info" aria-hidden="true"></i>
-                                    <b>Add Company</b></a>
-                                </div>
-                                
-                                <!-- The Modal -->
-                                <div id="addCompanyModal" class="modal">
-
-                                    <!-- Modal content -->
-                                    <div class="modal-content">
-                                        <button class="btn btn-outline-danger col-md-1" style="border: none;" onclick="close1()">&times;</button>
-                                    <div class="container__form container--signup">
-                                        <form action="{% url 'super-admin-company' %}" method="POST" class="form" id="form1">
-                                            {% csrf_token %}
-                                            <h2 class="form__title">Add Company</h2>
-                                            <hr style="border: 2px solid black; width: 50%;">
-                                            <input type="text" placeholder="Company Name"  name="name"  class="input" />
-                                            <input type="text" placeholder="Company Email" name="email" class="input" />
-                                            <input type="text" placeholder="Location" name="location" class="input" />
-                                            <input type="text" placeholder="Number" name="number" class="input" />
-                                            <button class="btn btn-primary">Add Company</button>
-                                        </form>
-                                    </div>
-                                    </div>
-                                
-                                </div>
-                            <!-- Button trigger modal -->
+            <!-- MAIN CONTENT-->    
+            <div class="modal-content" id="admins">
+                
+                <div class="container__form container--signup mt-5">
+                    <h3>{{ company.name }} </h3>
+                    <h4 class="text-warning">Administrators</h4>
+                    <hr>
+                    <!-- Modal content -->
+                {% for user in users %}
+                    {% if user.company == company.id %}
+                    <div class="row mt-3" style="line-height:40px;">
+                    <div class="lables col-md-3" style="text-align: right; font-weight: bold;">
+                        <p>FirstName</p>
+                        <p>LastName</p>
+                        <p>Email</p>
+                        <p>Phonenumber</p>
                     </div>
+                    <div class="col-md-3" style="text-align: left;">
+                        <p> {{ user.first_name }} </p>
+                        <p> {{ user.last_name }} </p>
+                        <p> {{ user.email }} </p>
+                        <p> {{ user.phonenumber }} </p>
+                        
+                    </div>
+                    <div class="col-md-5">
+                        <img src="https://cdn.dribbble.com/users/304574/screenshots/6222816/male-user-placeholder.png" class="img-fluid rounded-circle hover-shadow" alt="Los Angeles Skyscrapers" style="width: 80%; height: 60%; "/>
+                        <form method="POST" style="height: 30%;"  class="form" id="form1" action="{% url 'super-admin-company-admin' %}" >
+                            {% csrf_token %}
+                            <input type="text" value="PUT" name="_method" id="method" class="input" style="display: none; height: 1px;" />
+                            <input type="text" value={{ user.id }} name="user_id" id="user_id" class="input" style="display: none; height: 1px;" />
+                            <input type="text" value="delete"  name="form_name" id="form_name" class="input" style="display: none; height: 1px;" />
+                            <button class="btn  btn-sm btn-danger">Remove Administrator</button>
+                        </form>
+                    </div>
+                    <hr>
+                </div>
+                <hr style="border: 1px solid;">
+                    {% endif %}
+                    {% endfor %}
                 </div>
             </div>
             </div>
-            <div class="content-table">
-                <div class="container-fluid">
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="my-5 p-2">
-                          <h1 class="display-4 text-center"> Company <span class="text-danger border px-2 bg-dark text-light my-2">Records</span></h1>
-                          <input type="text" id="searchItems" placeholder="Search Company Name" class="form-control float-left col-md-4 mt-3" style="border-radius: 25px;"  onkeyup="filterTable()">
-                        </div>
-                        
+            
+                    </div>
+
                       </div>
                     </div>
                   </div>
