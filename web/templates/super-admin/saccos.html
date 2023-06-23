@@ -310,13 +310,20 @@
                                     <div class="modal-content">
                                         <button class="btn btn-outline-danger col-md-1" style="border: none;" onclick="close1()">&times;</button>
                                     <div class="container__form container--signup">
-                                        <form action="#" class="form" id="form1">
+                                        <form action="{% url 'super-admin-sacco' %}" method="POST" class="form" id="form1">
                                             <h2 class="form__title">Add Sacco</h2>
+                                            {% csrf_token %}
                                             <hr style="border: 2px solid black; width: 50%;">
-                                            <input type="text" placeholder="Sacco Name" class="input" />
-                                            <input type="text" placeholder="Sacco Email" class="input" />
-                                            <input type="text" placeholder="Location" class="input" />
-                                            <input type="text" placeholder="Number" class="input" />
+                                            <input type="text" name="name" placeholder="Sacco Name" class="input" />
+                                            <input type="text" name="email" placeholder="Sacco Email" class="input" />
+                                            <input type="text" name="location" placeholder="Location" class="input" />
+                                            <input type="text" name="number" placeholder="Number" class="input" />
+                                            <select name="company" class="input">
+                                                {% for company in companies %}
+                                                <option disabled selected >Company</option>
+                                                <option value="{{ company.id }}" name="company" >{{ company.name }}</option>
+                                                {% endfor %}
+                                              </select>
                                             <button class="btn btn-primary">Add Sacco</button>
                                         </form>
                                     </div>
@@ -351,14 +358,15 @@
                           <tbody>
                             {% for  Sacco in saccos%}
                             <tr>
-                              <th scope="row">{{ Sacco.id }}</th>
-                              <td>{{ Sacco.name }}</td>
-                              <td>{{ Sacco.email }}</td>
-                              <td>{{ Sacco.location }}</td>
-                              <td>{{ Sacco.phonenumber }}</td>
-                              <td>
+                                <th scope="row">{{ Sacco.id }}</th>
+                                <td>{{ Sacco.name }}</td>
+                                <td>{{ Sacco.email }}</td>
+                                <td>{{ Sacco.location }}</td>
+                                <td>{{ Sacco.phonenumber }}</td>
+                                <td>
                                 <div class="row">
-                                    <button class="btn btn-warning" id="update"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                    <p></p>
+                                    <button class="btn btn-warning" id="update" onclick="open_update_form( {{ Sacco }} )"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                     <!-- The Modal -->
                                     <div id="updateModal" class="modal">
 
@@ -366,14 +374,17 @@
                                         <div class="modal-content">
                                         <button class="btn btn-outline-danger col-md-1" style="border: none;" onclick="close2()">&times;</button>
                                         <div class="container__form container--signup">
-                                            <form action="#" class="form" id="form1">
+                                            <form action="{% url 'super-admin-sacco' %}" method="POST" class="form" id="form1">
+                                                {% csrf_token %}
                                                 <h2 class="form__title">Update Sacco</h2>
                                                 <hr style="border: 2px solid black; width: 50%;">
-                                                <input type="text" placeholder="Sacco Name" class="input" />
-                                                <input type="text" placeholder="Sacco Email" class="input" />
-                                                <input type="text" placeholder="Location" class="input" />
-                                                <input type="text" placeholder="Number" class="input" />
-                                                <button class="btn btn-primary">Add Sacco</button>
+                                                <input type="text" value="PUT" name="_method" id="method" class="input" />
+                                                <input type="text"  name="sacco_id"  id="sacco_id" class="input" />
+                                                <input type="text" placeholder="Sacco Name"  name="name" id="sacco_name" class="input" />
+                                                <input type="text" placeholder="Sacco Email"  name="email" id="sacco_email" class="input" />
+                                                <input type="text" placeholder="Location"  name="location" id="sacco_location" class="input" />
+                                                <input type="text" placeholder="Number"  name="number" id="sacco_number" class="input" />
+                                                <button class="btn btn-primary">Update Sacco</button>
                                             </form>
                                         </div>
                                         </div>
@@ -460,9 +471,26 @@
             // Get the <span> element that closes the modal
             var span = document.getElementsByClassName("close")[0];
 
-            // When the user clicks on the button, open the modal
-            btn.onclick = function() {
+            // When the user clicks on the update button, open the update modal form
+            function open_update_form(sacco) {
             modal2.style.display = "block";
+            
+            $('#sacco_id').attr('type','hidden');
+            $('#method').attr('type','hidden');
+
+            $('#sacco_id').attr('placeholder',sacco["id"]);
+            $('#sacco_name').attr('placeholder',sacco["name"]);
+            $('#sacco_email').attr('placeholder',sacco["email"]);
+            $('#sacco_location').attr('placeholder',sacco["location"]);
+            $('#sacco_number').attr('placeholder',sacco["number"]);
+            
+            $('#sacco_id').attr('value',sacco["id"]);
+            $('#sacco_name').attr('value',sacco["name"]);
+            $('#sacco_email').attr('value',sacco["email"]);
+            $('#sacco_location').attr('value',sacco["location"]);
+            $('#sacco_number').attr('value',sacco["number"]);
+            
+
             }
             function close2(){
                 modal2.style.display = "none";

@@ -1,4 +1,5 @@
 {% load static %}
+{% csrf_token %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -54,46 +55,26 @@
         transition: all 0.3s ease-out;
         }
         .button:hover {
-        background: #06D85F;
+        background: #89CFF0;
         }
 
         /* The Modal (background) */
         .modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        z-index: 1; /* Sit on top */
+        position: absolute; /* Stay in place */
         left: 0;
         top: 0;
         width: 100%; /* Full width */
         height: 100%; /* Full height */
         overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        
         }
 
         /* Modal Content/Box */
         .modal-content {
         background-color: #fefefe;
-        margin: 10% auto; /* 15% from the top and centered */
-        margin-left: 35%;
+        margin: 0% auto; /* 15% from the top and centered */ 
         padding: 20px;
-        border: 1px solid #888;
-        width: 40%; /* Could be more or less, depending on screen size */
-        }
-
-        /* The Close Button */
-        .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
+        width: 100%; /* Could be more or less, depending on screen size */
         }
 
         .form {
@@ -160,7 +141,7 @@
                         </li>
                         <li>
                             <a href="{% url 'super-admin-company' %}">
-                                <i class="fas fa-building"></i>User</a>
+                                <i class="fas fa-building"></i>Company</a>
                         </li>
                         <li>
                             <a href="{% url 'super-admin-sacco' %}">
@@ -202,15 +183,15 @@
                             <a href="{% url 'super-admin' %}">
                                 <i class="fas fa-tachometer-alt"></i>Dashboard</a>
                         </li>
-                        <li>
+                        <li class="active">
                             <a href="{% url 'super-admin-company' %}">
-                                <i class="fas fa-building"></i>User</a>
+                                <i class="fas fa-building"></i>Company</a>
                         </li>
                         <li>
                             <a href="{% url 'super-admin-sacco' %}">
                                 <i class="fas fa-table"></i>Sacco</a>
                         </li>
-                        <li class="active">
+                        <li>
                             <a href="{% url 'super-admin-users' %}">
                                 <i class="fas fa-users"></i>Users</a>
                         </li>
@@ -291,111 +272,51 @@
             </header>
             <!-- HEADER DESKTOP-->
 
-            <!-- MAIN CONTENT-->
-            <div class="main-content">
-            <div class="section__content section__content--p30">
-                <div class="container-fluid">
-                    <div class="row">
-                    <div class="col-md-12">
-                        <div class="overview-wrap">
-                                <div class="box">
-                                    <a class="button au-btn au-btn-icon au-btn--blue" id="addUser" href="#popup1"><i class="fa fa-plus" aria-hidden="true"></i>
-                                    Add User</a>
-                                </div>
-                                
-                                <!-- The Modal -->
-                                <div id="addUserModal" class="modal">
-
-                                    <!-- Modal content -->
-                                    <div class="modal-content">
-                                        <button class="btn btn-outline-danger col-md-1" style="border: none;" onclick="close1()">&times;</button>
-                                    <div class="container__form container--signup">
-                                        <form action="{% url 'super-admin-users' %}" method="POST" class="form" id="form">
-                                            {% csrf_token %}
-                                            <h2 class="form__title">Add User</h2>
-                                            <hr style="border: 2px solid black; width: 50%;">
-                                            <input type="text" placeholder="FirstName" name="first_name"  class="input" />
-                                            <input type="text" placeholder="LastName" name="last_name"  class="input" />
-                                            <input type="text" placeholder="Email" name="email"  class="input" />
-                                            <input type="text" placeholder="Location" name="location"  class="input" />
-                                            <input type="text" placeholder="Phonenumber" name="phonenumber"  class="input" />
-                                            <input type="password" placeholder="password" name="password"  class="input" />
-                                            <input type="password" placeholder="password" name="password2"  class="input" />
-                                            <button class="btn btn-primary">Add User</button>
-                                        </form>
-                                    </div>
-                                    </div>
-                                
-                                </div>
-                            <!-- Button trigger modal -->
+            <!-- MAIN CONTENT-->    
+            <div class="modal-content" id="admins">
+                
+                <div class="container__form container--signup mt-5">
+                    <h3>{{ company.name }} </h3>
+                    <h4 class="text-warning">Administrators</h4>
+                    <hr>
+                    <!-- Modal content -->
+                {% for user in users %}
+                    {% if user.company == company.id %}
+                    <div class="row mt-3" style="line-height:40px;">
+                    <div class="lables col-md-3" style="text-align: right; font-weight: bold;">
+                        <p>FirstName</p>
+                        <p>LastName</p>
+                        <p>Email</p>
+                        <p>Phonenumber</p>
                     </div>
+                    <div class="col-md-3" style="text-align: left;">
+                        <p> {{ user.first_name }} </p>
+                        <p> {{ user.last_name }} </p>
+                        <p> {{ user.email }} </p>
+                        <p> {{ user.phonenumber }} </p>
+                        
+                    </div>
+                    <div class="col-md-5">
+                        <img src="https://cdn.dribbble.com/users/304574/screenshots/6222816/male-user-placeholder.png" class="img-fluid rounded-circle hover-shadow" alt="Los Angeles Skyscrapers" style="width: 80%; height: 60%; "/>
+                        <form method="POST" style="height: 30%;"  class="form" id="form1" action="{% url 'super-admin-company-admin' %}" >
+                            {% csrf_token %}
+                            <input type="text" value="PUT" name="_method" id="method" class="input" style="display: none; height: 1px;" />
+                            <input type="text" value={{ user.id }} name="user_id" id="user_id" class="input" style="display: none; height: 1px;" />
+                            <input type="text" value="delete"  name="form_name" id="form_name" class="input" style="display: none; height: 1px;" />
+                            <button class="btn  btn-sm btn-danger">Remove Administrator</button>
+                        </form>
+                    </div>
+                    <hr>
+                </div>
+                <hr style="border: 1px solid;">
+                    {% endif %}
+                    {% endfor %}
                 </div>
             </div>
-            
             </div>
-            <div class="content-table">
-                <div class="container-fluid">
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="my-5 p-2">
-                          <h1 class="display-4 text-center"> User <span class="text-danger border px-2 bg-dark text-light my-2">Records</span></h1>
-                          <input type="text" id="searchItems" placeholder="Search User Name" class="form-control float-left col-md-4 mt-3" style="border-radius: 25px;"  onkeyup="filterTable()">
-                        </div>
-                        <table class="table table-hover" id="tables">
-                          <thead class="thead-dark">
-                            <tr>
-                              <th scope="col">Id</th>
-                              <th scope="col">FirstName</th>
-                              <th scope="col">LastName</th>
-                              <th scope="col">Email</th>
-                              <th scope="col">Number</th>
-                              <th scope="col">Actions</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {% for  user in users%}
-                            <tr>
-                              <th scope="row">{{ user.id }}</th>
-                              <td>{{ user.first_name }}</td>
-                              <td>{{ user.last_name }}</td>
-                              <td>{{ user.email }}</td>
-                              <td>{{ user.phonenumber }}</td>
-                              <td>
-                                <div class="row">
-                                    <button class="btn btn-warning"  onclick="open_update_form( {{ user }} )" id="update"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
-                                    <!-- The Modal -->
-                                    <div id="updateModal" class="modal">
+            
+                    </div>
 
-                                        <!-- Modal content -->
-                                        <div class="modal-content">
-                                        <button class="btn btn-outline-danger col-md-1" style="border: none;" onclick="close2()">&times;</button>
-                                        <div class="container__form container--signup">
-                                            <form action="{% url 'super-admin-users' %}" method="POST" class="form" id="form1">
-                                                {% csrf_token %}
-                                                <h2 class="form__title">Update User</h2>
-                                                <hr style="border: 2px solid black; width: 50%;">
-                                                <input type="text" value="PUT" name="_method" id="method" class="input" />
-                                                <input type="text"  name="id" id="user_id" class="input" />
-                                                <input type="text" placeholder="FirstName" name="first_name" id="user_first_name" class="input" />
-                                                <input type="text" placeholder="LastName" name="last_name" id="user_last_name" class="input" />
-                                                <input type="text" placeholder="Email" name="email" id="user_email" class="input" />
-                                                <input type="text" placeholder="Location" name="location" id="user_location" class="input" />
-                                                <input type="text" placeholder="Phonenumber" name="phonenumber" id="user_phonenumber" class="input" />
-                                                <input type="password" placeholder="password" name="password" id="user_password" class="input" />
-                                                <input type="password" placeholder="Confirm password" name="password2" id="user_password2" class="input" />
-                                                <button class="btn btn-primary">Update User</button>
-                                            </form>
-                                        </div>
-                                        </div>
-                                    </div>
-                                <!-- Button trigger modal -->
-                                    <button class="btn btn-danger ml-3"><i class="fa fa-trash " aria-hidden="true"></i></button>
-                                </div>
-                              </td>
-                            </tr>
-                            {% endfor %}
-                          </tbody>
-                        </table>
                       </div>
                     </div>
                   </div>
@@ -426,7 +347,10 @@
     <script src="{% static 'vendor/chartjs/Chart.bundle.min.js' %}"></script>
     <script src="{% static 'vendor/select2/select2.min.js' %}">
     </script>
+    
     <script>
+
+       
         filterTable = () => {
             let filter = document.getElementById("searchItems").value.toUpperCase();
             let table = document.getElementById("tables");
@@ -446,12 +370,12 @@
                 }
             }
             };
-        
+            
             // Get the modal
-            var modal1 = document.getElementById("addUserModal");
+            var modal1 = document.getElementById("addCompanyModal");
 
             // Get the button that opens the modal
-            var btn = document.getElementById("addUser");
+            var btn = document.getElementById("addCompany");
 
             // When the user clicks on the button, open the modal
             btn.onclick = function() {
@@ -461,34 +385,27 @@
             function close1(){
                 modal1.style.display = "none";
             }
-            // Get the modal for User update
+            // Get the modal for company update
             var modal2 = document.getElementById("updateModal");
 
-            // Get the button that opens the modal
-            var btn = document.getElementById("update");
-
-            // Get the <span> element that closes the modal
-            var span = document.getElementsByClassName("close")[0];
 
             // When the user clicks on the update button, open the update modal form
-            function open_update_form(user) {
+            function open_update_form(company) {
             modal2.style.display = "block";
-            console.log(user);
-            $('#user_id').attr('type','hidden');
-            $('#method').attr('type','hidden');
-            $('#user_id').attr('placeholder',user["id"]);
-            $('#user_first_name').attr('placeholder',user["first_name"]);
-            $('#user_last_name').attr('placeholder',user["last_name"]);
-            $('#user_email').attr('placeholder',user["email"]);
-            $('#user_location').attr('placeholder',user["location"]);
-            $('#user_number').attr('placeholder',user["phonenumber"]);
             
-            $('#user_id').attr('value',user["id"]);
-            $('#user_first_name').attr('value',user["first_name"]);
-            $('#user_last_name').attr('value',user["last_name"]);
-            $('#user_email').attr('value',user["email"]);
-            $('#user_location').attr('value',user["location"]);
-            $('#user_phonenumber').attr('value',user["phonenumber"]);
+            $('#id').attr('type','hidden');
+            $('#method').attr('type','hidden');
+            $('#company_id').attr('placeholder',company["id"]);
+            $('#company_name').attr('placeholder',company["name"]);
+            $('#company_email').attr('placeholder',company["email"]);
+            $('#company_location').attr('placeholder',company["location"]);
+            $('#company_number').attr('placeholder',company["number"]);
+            
+            $('#company_id').attr('value',company["id"]);
+            $('#company_name').attr('value',company["name"]);
+            $('#company_email').attr('value',company["email"]);
+            $('#company_location').attr('value',company["location"]);
+            $('#company_number').attr('value',company["number"]);
             
 
             }
@@ -497,12 +414,53 @@
             }
             // When the user clicks anywhere outside of the modal, close it
             window.onclick = function(event) {
-            if (event.target == modal1  || event.target == modal2 ) {
+            if (event.target == modal1  || event.target == modal2  ) {
                 modal2.style.display = "none";
                 modal1.style.display = "none";
             }
             }
+            // Get modal for admins
+            var modal3 = document.getElementById("adminModal");
+            
+            function show_company_admin(company){
+                modal3.style.display = "block";
+                None = "none"
+                False = false
+                True = true
 
+                var users = {{ users|safe }};
+                for(user in users){
+                    if(users[user].company == company.id){
+                        var company_admins = users[user]
+                    }
+                }
+
+                var admin_div = `
+                % for users in company_admins%
+                <div class="row mt-3" style="line-height:40px;">
+                                            <div class="lables col-md-3" style="text-align: right; font-weight: bold;">
+                                                <p>FirstName</p>
+                                                <p>LastName</p>
+                                                <p>Email</p>
+                                                <p>Phonenumber</p>
+                                            </div>
+                                            <div class="col-md-3" style="text-align: left;">
+                                                <p> {{ user.first_name }} </p>
+                                                <p> {{ user.last_name }} </p>
+                                                <p> {{ user.email }} </p>
+                                                <p> {{ user.phonenumber }} </p>
+                                                
+                                            </div>
+                                            % endFor %
+                                            `;
+                var element = document.getElementById("admins");
+                element.appendChild(admin_div);
+
+            }
+            function close3(){
+                modal3.style.display = "none";
+            }
+           
     </script>
 
 </body>

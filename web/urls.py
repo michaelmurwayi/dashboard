@@ -1,9 +1,10 @@
 from django.urls import path
-from .views import DashboardView, SuperAdminCompanyView, SuperAdminSaccoView, SuperAdminUsersView, SuperAdminChartsView, SuperAdminEventsView, SuperAdminMapsView
+from .views import DashboardView, SuperAdminCompanyView, SuperAdminCompanyAdminView, SuperAdminSaccoView, SuperAdminUsersView, SuperAdminChartsView, SuperAdminEventsView, SuperAdminMapsView
 urlpatterns = [
     # super admin routes
     path('super-admin/', DashboardView.as_view(), name="super-admin"),
     path('super-admin/company', SuperAdminCompanyView.as_view(), name="super-admin-company"),
+    path('super-admin/company-admin', SuperAdminCompanyAdminView.as_view(), name="super-admin-company-admin"),
     path('super-admin/sacco', SuperAdminSaccoView.as_view(), name="super-admin-sacco"),
     path('super-admin/users', SuperAdminUsersView.as_view(), name="super-admin-users"),
     path('super-admin/charts', SuperAdminChartsView.as_view(), name="super-admin-charts"),
